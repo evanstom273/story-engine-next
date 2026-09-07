@@ -1,0 +1,868 @@
+## Story Engine v3.4.0
+
+_Released: 7 Aug 2026, 04:25 BST_
+
+_Media Library_
+
+### Added
+
+- Media Library: browse all saved audio on your device from the home panel or the dedicated /media-library page
+- Stores audiobooks, chapter audio, AI document narration, and podcast audio locally in IndexedDB
+- Category filters for audiobooks, chapter audio, AI documents, and podcasts
+- Play any saved asset from the library using the shared bottom player bar, with resume position and progress shown on each card
+- Save to Library from the playback bar while listening to a chapter or full-story audiobook; replaces an existing copy when the audio has changed
+- Story Settings → Save Story Audiobook to Library runs a background job to synthesize and save the full story audiobook
+- Auto-ingest: AI document audio, podcast audio, and completed audiobook export jobs are saved to the library automatically
+- Orphaned badge when the linked story was deleted but the audio file is still kept
+- Delete saved audio from the library or home panel
+- Opus compression on ingest when supported for smaller on-device storage
+
+## Story Engine v3.3.1
+
+_Released: 6 Aug 2026, 22:30 BST_
+
+_Library Search Expansion & PWA Updates_
+
+### Fixed
+
+- Help bubble tooltips no longer clip off-screen on narrow phone layouts
+- Library search panel now sits below the mobile header, scrolls correctly, and keeps the top bar visible
+
+### Added
+
+- Library search advanced filters: protagonist, story features (RP, mature, sequel/branch, guided history), universe type, character activity, and auto-indexing mode
+- Message, chapter, and linked-story count filters with quick preset chips
+- New sort options: message count, chapter count, story count, reverse alphabetical, and group-by-type
+- Search results now show message/chapter counts and linked-story stats inline
+- PWA update banner prompts you to reload when a new production build is available
+
+## Story Engine v3.3.0
+
+_Released: 6 Aug 2026, 17:30 BST_
+
+_Background Task Manager & Streaming Reliability_
+
+### Fixed
+
+- Story generation now treats the live stream as the source of truth — a good streamed response is saved instead of being discarded for a hidden non-streaming retry
+- Validation rewrites stream visibly in the workspace; the streaming panel shows Attempt N/10, a 180s idle timeout, and up to 10 rewrite attempts
+
+### Added
+
+- Background Task Manager for long-running AI work: update index, full re-index, audiobook export, AI document generation, and podcast audio
+- Global background queue with configurable max concurrent tasks (Settings → AI, default 2)
+- Background Tasks button in the app bar with running/queued/completed progress, cancel, tap-to-navigate, and up/down reorder for queued tasks
+- Long-running jobs continue when you navigate away; on-page progress UI remains when you stay on the screen where the task started
+
+## Story Engine v3.2.0
+
+_Released: 5 Aug 2026, 00:59 BST_
+
+_Character Aliases & AI Model Roles_
+
+### Fixed
+
+- Character Concept Randomise no longer returns truncated biography openers on Gemini thinking models; thinking is disabled for concept generation and incomplete pitches are retried or rejected
+- Gemini 3.1 Pro and 2.5 Pro no longer receive invalid thinkingBudget: 0; concept generation uses thinkingLevel low or minimum budget 128 instead
+- Character Concept Randomise now treats aliases as ambiguous recognition names (not plot mandates), asks for a fresh hook on re-randomise, and avoids defaulting to hacker/vigilante tropes
+- Character and concept generation no longer drags in the full main cast of a universe unless listed in Known ties or named in the Character Concept
+- Guided chapter generation no longer fails validation when a Director beat is correctly realized as scene content; directed scenes skip scene-state renarration rewrites and accept sanitized output as a last resort
+- Generate Chapters is available immediately on a fresh chapter banner after guided story history, without requiring a manual scene first
+- Guided chapter generation reuses an existing chapter banner when present and only creates a new heading when one is missing
+- Generate Chapters planner no longer requires an overall direction; you can plan each chapter directly with one input box per scene
+- Story generation now prefers the player character's alias as their scene name and enforces their specified pronouns instead of inferring he/him or she/her from name or gender
+- Single-narrator audiobook mode no longer inserts awkward "X said" attribution; character actions and dialogue read as plain narration with one voice
+- Transcript sanitization shortens speaker labels and name mentions to first names, fixing validation failures when the model outputs quoted nicknames like Morgan "Mo" Ellis
+- Transcript sanitization now auto-repairs common malformed model output (wrapped narrator labels, orphan action lines, stray *.* markers, truncated names, and missing subjects) before validation and indexing
+- Story generation no longer discards a good streamed response when only minor format validation remains after auto-repair; the sanitized transcript is saved instead of throwing a validation error
+- Transcript repair no longer stamps every unlabeled beat as the player character; dialogue addressed to the player is stripped from false player labels and triggers speaker-attribution rewrite
+- Story prompts now tell the model to use character names in Narrator blocks instead of only titles like Captain when the character is known
+
+### Added
+
+- Player character Aliases field for nicknames, titles, surnames, and other names the AI should recognise in story prompts
+- Known ties field on player characters for optional canon relationships the AI may reference during generation
+- Randomise button on Character Concept to generate a concise pitch that respects existing character fields and the selected universe
+- Internal Character Concept guide (definition + canonical example) used by concept Randomise generation
+- Settings → AI now has independent Story, MetaChat, Indexing, and Character & Universe Generation model selectors per provider
+- Existing story model settings migrate into Story Model on upgrade; the other three roles default to Story Model until changed
+- Generate Chapters planner shows a separate scene input for each scene in a chapter instead of requiring Scene I: / Scene II: formatting
+- AI-generated chapter banners include a View plan button that shows the saved overall direction, chapter overview, and per-scene prompts used during guided generation
+- Story AI settings include an audiobook performance toggle: single narrator (fewer TTS requests) or radio drama (per-character voices)
+
+## Story Engine v3.1.0
+
+_Released: 4 Aug 2026, 14:05 BST_
+
+_Guided Chapter Generation, Story Audiobook & Archive Export_
+
+### Fixed
+
+- Version wiring aligned to 3.1.0 across the app label, changelog, npm metadata, and Android release metadata
+- Guided chapter generation: each scene is one assistant message (no auto-Continue splits), scenes-per-chapter is authoritative over Scene I/II plan text, reuses an existing chapter banner instead of duplicating it, and rejects truncated Director staging beats
+- Guided chapter generation: stops silently mid-scene when background job state races or streaming pauses between tokens; failures now surface in the progress bar
+
+### Added
+
+- Guided chapter generation: optional Story History when creating a story; background jobs stage Director beats, narrate scenes, end each chapter, and run incremental indexing per chapter
+- Generate Chapters in the story workspace chat composer beside Send, Clear, and Generate Response
+- Guided chapter planner modal with overall direction, chapter count, per-chapter overviews, scenes-per-chapter, and optional AI chapter-plan generation
+- Guided generation streams in the workspace with visible Director staging lines, chapter banners, collapsible progress, and cancel
+- Story History layout: divider between generated backstory and the playable chapter; supports Chapter I: / Scene I: scene planning text
+- Per-chapter continuity ledger during guided generation (docking bays, shuttles, meeting locations, and similar scene assignments)
+- Workspace Generate Chapters continues from the last closed chapter transcript and archive summary in existing stories
+- AI-started stories can use Generate Chapters after chapter one has playable content, even without a formal chapter end
+- Story settings background jobs label guided chapter generation separately from indexing
+- In-app story audiobook: persistent per-character voices, per-message Play, Listen to Chapter on banners, fixed player bar with scrubbing and ±5s skip
+- Full-story Listen from the transcript and Export Story Audiobook (WAV) from story settings
+- Per-story parallel chapter audiobook synthesis (1–5) with per-chapter progress timers and checkmarks
+- Chapter playback announces chapter titles in the narrator voice before each chapter body
+- Character TTS rules: quoted dialogue uses character voices; actions and narrator prose use the narrator (Player RP: first-person actions in character voice)
+- Collapsible full-story audiobook preparation progress in the playback bar; Listen to Chapter while remaining segments synthesize in the background
+- Transcript sanitization for malformed markers inside quoted dialogue when viewing or playing locked stories
+- Director directions use the narrator voice; per-chunk volume normalization keeps character voices closer to the same loudness
+- Locked prequel stories can adjust audiobook parallel-chapters without unlocking story model settings
+- Archive-equivalent Markdown export with navigable table of contents (mirrors archive PDF sections)
+- Per-message deep indexing processes one transcript message at a time for finer continuity extraction
+- Deep indexing progress UI with elapsed timer, animated progress bar, cancel control, and collapsible chapter-review list
+- Richer indexing output: transcript-backed NPC descriptions, world facts, deduped relationship history, and ensemble cast status bullets
+- Story export filenames include a local-time timestamp
+- Changelog history and exports show a Released timestamp for every version
+
+## Story Engine v3.0.0
+
+_Released: 3 Aug 2026, 22:25 BST_
+
+_AI Documents, Gemini TTS & In-App Narration_
+
+### Fixed
+
+- Gemini TTS reliability: generateContent API path, per-chunk timeouts, retries, and resume after failed podcast audio chunks
+- Podcast TTS voices stay consistent across chapter sections instead of swapping when a new section opens with the other host
+- TTS now includes character names for label-only transcript lines (e.g. Morgan Ellis: / puts his pen down → spoken as Morgan Ellis puts his pen down)
+- Archive PDF export skips a full re-index when the story index already matches the live message count
+- Version wiring aligned to 3.0.0 across the app label, changelog, npm metadata, and Android release metadata
+
+### Added
+
+- AI Document Generator (Settings → AI Documents): companion documents from library stories or uploaded exports — podcast chapter breakdowns, thematic discussions, guides, and custom prompts
+- Chapter-by-chapter document generation with long-form Sam & Alex podcast prompts (personalities, variable chapter depth, rolling context, Final Thoughts epilogue)
+- Gemini TTS podcast audio export (WAV) from generated Markdown, plus Audio from Markdown to synthesize WAV without re-running document generation
+- Gemini TTS voice catalog: 30 prebuilt narrators with grouped pickers for Sam/Alex podcast export and separate story/MetaChat narration settings
+- TTS model selection (Gemini 3.1 Flash TTS with automatic 2.5 fallback)
+- In-app Gemini TTS playback: play/stop on every assistant story message (chrome and reader modes)
+- MetaChat reply play button for assistant messages
+- Listen to Chapter on chapter start banners in reader view
+- TTS loading feedback: animated spinner, elapsed timer, chunk progress, helper text, and cancel while Gemini synthesizes (10–30s+ for long passages)
+
+## Story Engine v2.7.0
+
+_Released: 30 Jul 2026, 22:34 BST_
+
+_Chapter Jump + Onboarding Tutorial_
+
+### Fixed
+
+- Chapter jump scroll accounts for mobile sticky navigation and targets the chapter heading banner instead of the first message in the chapter
+- Version wiring aligned to 2.7.0 across the app label, changelog, npm metadata, and Android release metadata
+
+### Added
+
+- Jump to Latest Chapter button in the story workspace scrolls to the current chapter header when multiple chapters exist
+- Tutorial tab in Settings with a full onboarding guide for new users covering setup, workspace controls, chapters, RP mode, MetaChat, and backups
+- Welcome modal on first launch with an optional Tutorial button or Close to dismiss
+
+## Story Engine v2.6.0
+
+_Released: 27 Jul 2026, 03:52 BST_
+
+_Transcript Command System_
+
+### Fixed
+
+- Continue control messages are no longer shown in the story reading/chat surfaces, so pacing commands do not interrupt the visible prose flow
+- Director, Continue, Canon, Secret, Reveal, and Retcon are all treated as transcript commands rather than ordinary spoken dialogue, so indexing, summaries, memory, and exports handle them more consistently
+- Version wiring is now aligned to 2.6.0 across the app label, changelog, npm metadata, and Android release metadata
+
+### Added
+
+- Director: can now be written directly in the transcript as an out-of-character scene-direction command, letting the AI stage and play out a scene while temporarily controlling all characters, including the player character, for that reply only
+- Continue and Continue. now work as transcript control commands, with or without surrounding asterisks, telling the AI to keep the current scene unfolding naturally without requiring fresh player dialogue or placeholder actions
+- Continue now inherits temporary player-character control when it immediately follows a Director turn, allowing a directed scene to keep playing out smoothly across multiple replies before normal control returns
+- Canon: now acts as an explicit author declaration that establishes or corrects permanent story truth with the highest continuity priority
+- Secret: now records information that is objectively true in the story but intentionally concealed from characters and/or the audience until later
+- Reveal: now authorises previously hidden secrets to begin entering the narrative naturally, so they can surface, be discussed, or resolve in later scenes
+- Retcon: now functions as an explicit author correction that replaces conflicting earlier canon from that point onward without requiring old scenes to be rewritten
+
+## Story Engine v2.5.1
+
+_Released: 26 Jul 2026, 04:46 BST_
+
+_Ending Flow + Chapter Review Rebuild_
+
+### Fixed
+
+- Deep indexing now rebuilds chapter archive reviews from saved chapter boundaries instead of only refreshing story memory and indexes
+- The sequel prompt after The End is now driven from saved transcript state so it appears more reliably after the ending message is recorded
+
+### Added
+
+- Typing The End in story chat now functions as a final ending marker and offers a direct Create Sequel prompt
+- MetaChat @ references now support live autocomplete suggestions while typing, with tap-to-insert and partial-name matching
+
+## Story Engine v2.5.0
+
+_Released: 26 Jul 2026, 03:52 BST_
+
+_Ensemble Storytelling + MetaChat Evolution_
+
+### Fixed
+
+- MetaChat now behaves more like a writers' room assistant, with stronger comparison, critique, brainstorming, and pattern-analysis guidance
+- Reset Chat now clears only the MetaChat conversation while preserving the story, indexes, summaries, memory, and saved references
+
+### Added
+
+- Narration guidance now supports ensemble scenes where supporting characters can joke, disagree, plan, gossip, and react without forcing the player character to be the center of every exchange
+- MetaChat now supports additive @Story, @Character, and @Universe references so story conversations can compare outside canon context without replacing the active story
+- A new library-level MetaChat is available from the main interface for cross-story and cross-universe analysis across the writing library
+
+## Story Engine v2.4.1
+
+_Released: 26 Jul 2026, 01:52 BST_
+
+_Branch Story + Editor Stability_
+
+### Fixed
+
+- Universe and player character editors no longer repopulate local form text during autosave refreshes, which could occasionally overwrite or erase text while you were typing
+- Text areas in universe creation, character creation, and story workspace editing are now larger and easier to resize, and the character appearance field has been expanded into a full-sized description box
+
+### Added
+
+- Story settings now include a Branch Story action that forks the current transcript, context, index, summaries, and AI configuration into an editable alternate timeline
+- Branch creation opens a dedicated flow that keeps the original story editable while preserving parent/child lineage between the source and the new branch
+
+## Story Engine v2.4.0
+
+_Released: 25 Jul 2026, 12:54 BST_
+
+_Create Sequel + Canon Lineage_
+
+### Fixed
+
+- Once a sequel is created, the predecessor story is now locked as a read-only prequel so canon cannot be accidentally continued in the old thread
+- Sequel story state now carries forward durable summary, world facts, unresolved threads, relationships, and significant memories without copying the full transcript
+
+### Added
+
+- Stories now support a first-class Create Sequel flow that starts a fresh transcript while inheriting distilled canon from the source story
+- Story creation can now open in sequel mode with the source story, universe, protagonist, and prior summary preloaded for continuity
+- Sequels keep lineage metadata so the app can track direct predecessor relationships and seeded canon origin
+
+## Story Engine v2.3.0
+
+_Released: 13 Jul 2026, 22:37 BST_
+
+_Response Variant Cycling + Streaming Improvements_
+
+### Fixed
+
+- Pronoun-attributed lines (She: *action*, He: *speaks*) were incorrectly being wrapped as Narrator: blocks — the repair step now skips any block that already has a colon-prefixed speaker label
+- Cancelling a generation no longer shows an error modal when no partial draft was produced
+- AI provider errors are now classified more precisely: streaming endpoint failures, cancelled requests, and unknown providers each have distinct error codes
+
+### Added
+
+- Regenerating the last AI message now creates a new candidate instead of silently overwriting — the previous response is preserved
+- Response X of Y counter with Previous / Next buttons lets you cycle between all generated candidates for the current turn
+- Switching candidates updates the transcript immediately so context, export, archive, and indexing always reflect the selected response
+- Sending the next message locks the selected candidate and discards the rest — variants only exist until you continue the story
+- Streaming panel now reads "Generating candidate…" during regeneration to make it clear a new alternative is being produced
+- Deterministic narration repair: unlabelled italic prose blocks (_text_ or *text*) are now automatically promoted to Narrator: *text.* before format validation, reducing the number of rewrite attempts required
+- All four AI providers (Gemini, OpenAI, Anthropic, OpenRouter) now fall back to non-streaming when the streaming endpoint fails before any content is received — generation succeeds instead of erroring
+- Regenerating a scene streams in real time and clears the previous message immediately, matching the send-message experience
+
+## Story Engine v2.2.6
+
+_Released: 11 Jul 2026, 16:31 BST_
+
+_MetaChat Error Visibility_
+
+### Fixed
+
+- Failed MetaChat replies were invisible — if the AI call failed (API error, safety refusal, context too large), the user's message would appear but no reply or error was shown, making MetaChat appear broken. Failed jobs now surface their error message in the overlay with a Retry button.
+
+## Story Engine v2.2.5
+
+_Released: 11 Jul 2026, 16:16 BST_
+
+_Speaker Attribution Hotfix_
+
+### Fixed
+
+- "As Alex:" and similar narrative transition phrases ("As", "With", "After", "While", etc.) were being treated as speaker labels, causing the following prose to appear under the wrong character. The parser now rejects any label whose first word is a narrative transition word, and the AI is explicitly instructed never to use "As [Name]:" as a speaker prefix.
+
+## Story Engine v2.2.4
+
+_Released: 11 Jul 2026, 16:02 BST_
+
+_Update Index & Narrator Attribution Fixes_
+
+### Fixed
+
+- Update index (incremental) was completing instantly without doing any work — the indexer was using the lightweight message counter (bumped after every AI turn) as its starting point, so it always saw 0 new messages. It now uses the actual last AI deep-index checkpoint
+- Third-person prose describing multiple characters (e.g. "Morgan does X while Elena does Y") was being written as an action beat inside the first character's block. The output format instructions now explicitly require any prose that mentions another character's actions to be placed in a Narrator: block
+
+## Story Engine v2.2.3
+
+_Released: 11 Jul 2026, 15:48 BST_
+
+_Gemini Formatting Fixes & Writing Quality_
+
+### Fixed
+
+- Trailing _ characters at the end of narrator paragraphs — Gemini wraps narrator text in _italic_ markdown; the italic-stripping regex now handles passages of any length, and any stray underscore delimiter left over is removed as a second pass
+- Duplicate character speech blocks — if the model emits two consecutive blocks for the same speaker separated by a blank line, they are now merged into a single bubble instead of appearing as two
+- Auto-indexing after chapters silently never firing — a state-save error could swallow the auto-index queue call; state-save and auto-index are now independent so the job is always queued
+- Fan-fiction character caricature — when writing in a referenced universe the model now treats imported lore as the authoritative voice reference and is explicitly told not to amplify or exaggerate traits, even iconic ones
+
+## Story Engine v2.2.2
+
+_Released: 5 Jul 2026, 19:38 BST_
+
+_Time System Rework & Story Text Fixes_
+
+### Fixed
+
+- Clock no longer advances from AI guesswork — only explicit player input (the /time command or a recognised natural language phrase) moves the clock
+- Removed the large-time-skip confirmation modal that incorrectly triggered on words like "sleep"
+- Character and universe generation failed silently on claude-sonnet-4-6 — the request was being rejected because Sonnet does not support assistant prefill; prefill removed, generation now works on all Claude models
+- AI provider errors now surface the real failure message instead of always showing "The AI request failed for an unknown reason"
+- Narrative colons (e.g. "Note:", "Warning:", "Time:") were being misread as speaker labels, causing the following text to be incorrectly formatted as dialogue or action
+- Numbered speaker names like "Paramedic 1" and "Guard 2" were rejected as invalid speakers, causing their lines to bleed into the previous character's block
+- Narrator text separated from a character block by a blank line was being appended to that character instead of starting its own paragraph
+- Consecutive action lines within a speaker block were being merged with ", and" — they are now emitted as separate segments
+
+### Added
+
+- /time command: type /time +2h, /time +30m, /time +3d, /time +1w in any message to advance the in-story clock by an exact amount — the command is stripped before the AI sees it
+- Natural language time phrases in messages (e.g. "2 hours later", "skip 3 days") are now detected and applied as exact arithmetic rather than AI estimation
+
+## Story Engine v2.2.1
+
+_Released: 23 Jun 2026, 07:38 BST_
+
+_Bulk Delete, Recurring Event Fix & Countdown_
+
+### Fixed
+
+- Monthly recurring events now fire on the correct calendar day each month — the previous flat +30 day advance caused the date to drift by ±1 day over time
+- Short months (Feb, 30-day months) clamp the day to the last valid day of that month rather than overflowing
+
+### Added
+
+- Danger Zone section in Settings → Storage: bulk delete all stories (with full cascade), all characters, or all universes — each requires typing a confirmation phrase
+- Recurring event rows now show a countdown to the next trigger (e.g. "in 8 days", "in 4h", "due soon")
+- Recurring events now support an amount range (e.g. 500–1000) — a random value within the range is applied each time the event fires
+
+## Story Engine v2.2.0
+
+_Released: 23 Jun 2026, 05:49 BST_
+
+_Dice Roll System for RP Mode_
+
+### Fixed
+
+- Character Sheet, Relationships, and MetaChat overlays no longer cover the taskbar
+- Stats tab removed from the Character Sheet (modifiers are now in Settings under Dice Rolls)
+- PDF rule lines no longer intersect text headings
+- Toolbar time chip no longer overflows into icon buttons on small screens
+
+### Added
+
+- Optional dice roll system for RP mode: write [roll] or [roll str/dex/con/int/wis/cha] in a message to trigger a d12 skill check; AI selects the stat automatically if not specified
+- Dice modifiers (-2 to +2) per stat (STR/DEX/CON/INT/WIS/CHA) configurable in Character Sheet Settings
+- Dice roll modal: displays stat and modifier, roll button, colour-coded outcome (SUCCESS green / FAILURE red / CRITICAL SUCCESS gold on natural 12)
+- Roll results appear as a toast notification and are permanently logged in the Events tab with the triggering action text for context
+- Transaction History table in RP Mode PDF export with colour-coded transaction types
+
+## Story Engine v2.1.0
+
+_Released: 23 Jun 2026, 00:58 BST_
+
+_RP Mode — Time, Money & Transaction Intelligence_
+
+### Fixed
+
+- Time not persisting: rpStats was loaded through the Story State V2 parser which requires full index data — new stories without an index pass lost their saved time on every overlay re-open
+- Double charge: the extractor was independently evaluating each narrator turn, causing the same purchase to be deducted when a price was announced and again when payment was confirmed
+- Time over-estimate: quick counter/register interactions were bucketed into 15–30 min; added finer brackets so a bodega scan advances 2–5 min instead
+- Gold not deducted: extractor only received narrator text, missing explicit prices stated by the player in their message
+
+### Added
+
+- In-story time tracking: set a starting date/time and the clock advances automatically after each scene
+- Per-message time chips in the transcript show when the in-story time changed
+- Toolbar time display shows the current in-story time at a glance
+- Calendar customisation: custom month names, weekday names, and year suffix for fantasy/sci-fi settings
+- Recurring events: configure rent, wages, or any periodic income/expense to trigger automatically as story time passes
+- Realistic currency inference: the AI infers prices from era/genre benchmarks when no explicit price is stated
+- Transaction state tracking: multi-turn purchases (price announced → payment confirmed) are now treated as a single transaction — no more duplicate charges
+- Player message context: the extractor now sees both the player's input and the narrator's response, so explicit prices stated by the player are correctly deducted
+
+## Story Engine v2.0.0
+
+_Released: 22 Jun 2026, 17:34 BST_
+
+_RP Mode — Relationships, AI Stat Integration & Export_
+
+### Fixed
+
+- PDF RP events section no longer shows garbled wide-spaced text (Unicode arrow and dash characters sanitised for Latin-1 encoding)
+- API key sanitisation strips non-ISO-8859-1 characters before HTTP requests to prevent fetch errors
+- Notification errors handled gracefully when a service worker is present
+
+### Added
+
+- Relationship system overhaul: AI-extracted tiers (stranger through nemesis/lover/family), dynamic trust/tension metrics, key turning-point history, and NPC relationship chips in the workspace toolbar
+- RP Mode: HP, currency, and core stat tracking (STR/DEX/CON/INT/WIS/CHA) with manual editing, stat changelog, and live gold display in the story toolbar
+- AI stat integration: narrator detects HP changes (damage, medication healing, rest recovery), currency transactions, and core stat shifts after each turn and applies them automatically
+- NPC HP tracking: named NPCs gain HP entries when they suffer or recover from physical health events, visible in the Character Sheet HP tab
+- RP Mode export: full character sheet snapshot including NPC HP, stat changelog, RP events log, and transcript as JSON, Markdown, TXT, or PDF
+- Character Sheet overlay polish: scrollable tab bar, Export merged into Settings, starting gold change syncs to live balance
+
+## Story Engine v1.19.0
+
+_Released: 21 Jun 2026, 01:53 BST_
+
+_Editorial UI Redesign + MetaChat Full-Screen_
+
+### Fixed
+
+- Scrolling inside MetaChat or the story settings drawer no longer scrolls the story page behind it
+- Secondary text brightness lifted across the sidebar and homepage for better legibility on dark backgrounds
+- Version wiring aligned to 1.19.0 across app label, changelog, npm metadata, and Android build.gradle (versionCode 11900)
+
+### Added
+
+- Full editorial dark-theme redesign: all panels, cards, forms, and drawers now match the homepage's near-black aesthetic with subtle border treatment
+- MetaChat moved from a squashed sidebar popup to a full-screen overlay accessible via a new robot icon in the story toolbar
+- Story settings sidebar sections are now collapsible accordions — Story Info, Story AI, and Index/Archive open by default
+- Collapsible sections smooth-scroll themselves into view when opened
+- Story workspace toolbar now uses compact icon buttons (Settings, Bubble View, Archive, Reader Mode, MetaChat, Manual Entry)
+- Screenplay/transcript view is now the default display mode
+- MetaChat responses now render markdown (bold, italic, lists, headings, code) instead of showing raw asterisks
+
+## Story Engine v1.18.3
+
+_Released: 20 Jun 2026, 01:31 BST_
+
+_Background Jobs + Persistent MetaChat + Multi-Source Universes_
+
+### Fixed
+
+- Starting a new chapter with flexible Chapter X syntax now implicitly closes the previous active chapter without breaking older Start/End markers
+- Story settings now surfaces job state and duplicate deep-index requests no longer stack up for the same story
+- Version wiring is now aligned to 1.18.3 across the app label and npm metadata
+
+### Added
+
+- Long-running story indexing now runs as a persistent background job with queued/running/complete/failed/cancelled states
+- MetaChat drafts now persist when you leave the overlay, and MetaChat replies can complete as background jobs
+- Universe references now support ordered multi-source wiki URLs with labels and precedence-aware prompt wiring
+
+## Story Engine v1.18.2
+
+_Released: 20 Jun 2026, 01:31 BST_
+
+_Fictional Injury Input Context Hotfix_
+
+### Fixed
+
+- Normal fictional aftermath lines such as shoulder pain, hospital wake-ups, antiseptic scene-setting, slings, IVs, and recovery prose are less likely to trigger over-literal safety refusals
+- Narrative parity is improved when the AI has already established injuries, extraction, hospital care, trauma, or recovery and the player responds in plain language
+- Safety refusal errors now make it clearer when the block came from the provider and when the request looks like a likely false positive in story context
+- Version wiring is now aligned to 1.18.2 across the app label, changelog, npm metadata, and Android release metadata
+
+### Added
+
+- Story input safety now analyses fictional-roleplay cues and recent canon context when a player writes about injury, pain, hospitals, trauma, or recovery
+- The latest player turn is now sent to the model with clearer in-story labelling so ordinary first-person aftermath prose reads more obviously as fiction
+- Input-safety context now includes recent transcript and story-state cues when the scene already supports injury or medical aftermath
+
+## Story Engine v1.18.1
+
+_Released: 13 Jun 2026, 04:48 BST_
+
+_Mature Fiction Context + Android Sync Hotfix_
+
+### Fixed
+
+- Normal genre-fiction themes such as shootouts, combat injuries, trauma, grief, panic, depression, relapse, and recovery are less likely to be misread as inherently unsafe just because the subject matter is intense
+- Provider-side safety refusals are now classified more clearly, with user-facing messaging that explains the hard boundary still applies to exploitative, eroticised, predatory, illegal, or instructional harm
+- Android Studio sync now receives the latest web bundle again after rebuilding and copying the updated app into the Android project
+- Version wiring is now aligned to 1.18.1 across the app label, changelog, npm metadata, and Android release metadata
+
+### Added
+
+- Story generation now uses a shared mature-fiction policy block that better recognises police, detective, military, action, fantasy, and psychological-drama storytelling as legitimate narrative context
+- Player Assist now follows the same mature-fiction and narrative-parity rules as the main narrator, so suggested turns are less likely to get over-sanitised
+- MetaChat now analyses difficult themes with the same serious, non-gratuitous fiction framing while staying firmly out of canon
+- Summary and indexing prompts now preserve mature-but-legitimate story consequences in clear, non-sensational language
+
+## Story Engine v1.18.0
+
+_Released: 11 Jun 2026, 22:37 BST_
+
+_Usability + Narrative Intelligence Upgrade_
+
+### Fixed
+
+- Archive and settings relationship views now surface dynamic metric values instead of only pair summaries
+- Chapter-aware exports now present the reading experience first without losing index-driven analysis sections
+
+### Added
+
+- Archive PDF exports now re-index first, stay transcript-first, and include chapter summaries
+- Story view now supports quicker daily use with theme switching, MetaChat, story archiving, and chapter-aware indexing
+- Library search now covers stories, universes, and player characters using summaries, notes, and key lore fields
+- Library browsing now includes stronger filtering/sorting across stories, universes, and player characters
+- Implicit director intent now recognises time skips and scene cuts, and generation guidance applies temporal consequences
+- Relationship dynamics now track richer evolving metrics including comfort, suspicion, fear, and affection
+
+## Story Engine v1.17.0
+
+_Released: 10 Jun 2026, 05:19 BST_
+
+_Indexing Independence + Canon Consistency_
+
+### Fixed
+
+- Manual Re-index no longer resets or delays the next automatic index run
+- Archive and Settings countdowns now calculate from the current story-specific auto-index interval
+- Player character sheet facts are now treated as stronger canon across narration, player assist, indexing, summaries, and memory rebuilds
+- Temporary emotions, goals, and short-term reactions are less likely to drift into permanent character descriptions
+
+### Added
+
+- Automatic indexing can now be configured per story with Disabled, 5, 10, 15, and 20 message intervals
+- Story Settings now includes an Automatic Indexing selector for per-story auto-index cadence
+- Story state now tracks automatic deep-index progress separately from manual re-indexing
+- Archive extraction now separates persistent character traits from transient scene state
+
+## Story Engine v1.16.0
+
+_Released: 9 Jun 2026, 23:13 BST_
+
+_Universe Blueprint UX + Collaboration + Archive Quality_
+
+### Fixed
+
+- Additive Generate Response now continues inline when the existing draft ends with an open delimiter like * or quotes
+- AI generation now retries transient failures and surfaces clearer human-readable error categories
+- Narrator guidance now more strongly treats explicit player-declared outcomes as canon and builds forward from them
+- Android import pickers now allow JSON files to be selected reliably even when the OS mislabels the MIME type
+- Edited assistant messages now preserve manual *action* formatting in the transcript instead of being re-sanitised away on display
+- Automatic indexing now bootstraps correctly even when a story has no prior story-state record yet
+- Archive extraction now better preserves premise, protagonist state, character status, and major turning points without dumping personal conditions into World Facts
+
+### Added
+
+- Universe creation now supports the referenced/custom blueprint workflow with separate Concept and Description fields
+- Archive view now surfaces Story Premise, Protagonist Focus, Current Situation, Recent Developments, and Character Status
+- Archive view now shows automatic deep-index progress so you can see when the next auto refresh is due
+- Story Settings now mirrors archive info in collapsible dropdown sections, including the auto deep-index countdown
+
+## Story Engine v1.15.0
+
+_Released: 9 Jun 2026, 04:18 BST_
+
+_Universe Packs + Archive UX + Support Bundle + Additive Assist_
+
+### Added
+
+- Universe Form 2.0 (structured fields with Randomise / Fill with AI / Clear)
+- Universe Packs: universe export now produces a versioned universe_pack bundle, and new stories bind to a universe snapshot to prevent canon drift
+- Archive-native story navigation: Archive view tab in the story workspace (indexes + evidence jumping)
+- Export Support Bundle (.zip) containing story JSON + Archive PDF + diagnostics
+- Generate Response is additive when text already exists in the input box (continuation mode)
+
+## Story Engine v1.14.2
+
+_Released: 7 Jun 2026, 22:28 BST_
+
+_Auto Indexing Consistency Hotfix_
+
+### Fixed
+
+- Automatic story-state updates now run the same full deep indexing pipeline as manual Re-indexing for consistent results
+
+## Story Engine v1.14.1
+
+_Released: 7 Jun 2026, 21:58 BST_
+
+_Cleanup & Promotion Hotfix_
+
+### Fixed
+
+- Promoting a Quick Character no longer creates duplicates (promotion converts the existing record in-place)
+- Cleanup routine updates story character references and removes losing duplicate records safely
+
+### Added
+
+- Story Settings tool: Cleanup Duplicates (merge likely duplicate characters and repoint stories)
+
+## Story Engine v1.14.0
+
+_Released: 7 Jun 2026, 21:18 BST_
+
+_Reliability + Identity + Android Auto Backup_
+
+### Fixed
+
+- Auto indexing and manual deep indexing now share the same reconciliation step for consistent outputs
+
+### Added
+
+- Automatic story-state refresh when the active protagonist identity changes
+- Relationship indexes now merge by character pair and show dynamic metrics (trust/loyalty/tension/etc.)
+- User messages can set a speaker label using a Name: prefix
+- Custom theme accent now derives readable foreground text color for accent buttons
+- Android auto-backup every ~12 hours (keeps last 5) with a share prompt
+
+## Story Engine v1.13.0
+
+_Released: 5 Jun 2026, 18:54 BST_
+
+_Character Concepts + Quick Protagonists_
+
+### Added
+
+- Player characters now support a Character Concept field
+- Generate character details from concept (and regenerate individual fields)
+- Create a Quick Story Character during story creation and promote it to the library later
+
+## Story Engine v1.12.0
+
+_Released: 5 Jun 2026, 18:54 BST_
+
+_Edit / Regenerate Last AI Message_
+
+### Added
+
+- Edit the last assistant message in-place (quick fix modal)
+- Regenerate the last assistant message (re-run AI for the last turn)
+
+## Story Engine v1.11.0
+
+_Released: 4 Jun 2026, 05:15 BST_
+
+_UX Cleanup_
+
+### Fixed
+
+- Removed the redundant show/hide sidebar button (Story Settings controls the sidebar)
+- Removed the Opening Prompt concept from story creation/editing, prompting, and exports
+
+## Story Engine v1.10.0
+
+_Released: 4 Jun 2026, 03:46 BST_
+
+_Theme System 2.0_
+
+### Added
+
+- Theme ids migrated: Purple → Amethyst, Gold → Copper
+- New themes: Emerald, Azure, Crimson, Silver
+- Accessibility themes: High Contrast, Monochrome
+- Custom theme with user-selected accent colour (persisted locally)
+- Derived accent tokens (muted/border/glow/surface/gradients) applied via CSS variables
+- Settings theme picker now shows preview cards
+
+## Story Engine v1.9.0
+
+_Released: 4 Jun 2026, 03:14 BST_
+
+_Theme-Accented UX Polish_
+
+### Fixed
+
+- Vercel deployments now support deep links (SPA routing rewrite)
+
+### Added
+
+- Player speaker tags now follow the active theme accent (matches NPC/canon tags)
+- Top-left logo is clickable and returns to the homepage
+- Homepage includes a New Story button for faster start
+
+## Story Engine v1.8.1
+
+_Released: 4 Jun 2026, 02:52 BST_
+
+_Transcript & PDF Formatting Fixes_
+
+### Fixed
+
+- Transcript mode is now script-like with speaker tags on every line (no giant player banner)
+- Archive PDF relationship separator uses ASCII (<->) for reliable export/search
+- Archive PDF transcript spacing no longer runs message headers into Time lines
+
+## Story Engine v1.8.0
+
+_Released: 4 Jun 2026, 02:36 BST_
+
+_Archive PDF Export (Phase 6)_
+
+### Added
+
+- New Archive PDF export (metadata + indexes/registries + evidence + numbered transcript)
+
+## Story Engine v1.7.0
+
+_Released: 4 Jun 2026, 02:36 BST_
+
+_Deep Indexing + PDF Metadata (Phase 5)_
+
+### Added
+
+- Deep-only automatic indexing every 20 messages (light indexing removed)
+- Manual Re-index action in Story Settings
+- PDF export metadata section (indexedAt, memory architecture version, indexed message count)
+
+## Story Engine v1.6.1
+
+_Released: 4 Jun 2026, 02:36 BST_
+
+_Memory & Indexes Hotfix_
+
+### Fixed
+
+- Fix crash when rebuilding memory & indexes (defensive array checks in index sanitiser)
+
+## Story Engine v1.6.0
+
+_Released: 4 Jun 2026, 02:36 BST_
+
+_Incremental Indexing & Evidence Viewer (Phase 4)_
+
+### Added
+
+- Automatic light indexing every 5 messages and deep re-index every 20 messages
+- Story Settings Index / Archive viewer (threads, facts, characters, locations, relationships)
+- Jump-to-evidence: clicking #N scrolls to and highlights transcript message N
+
+## Story Engine v1.5.0
+
+_Released: 4 Jun 2026, 02:36 BST_
+
+_AI-Assisted Index System (Phase 3)_
+
+### Added
+
+- Transcript-stable message numbering for index evidence references
+- Indexes section populated during rebuild (entities, facts, threads, memories, relationships with evidence)
+
+## Story Engine v1.4.0
+
+_Released: 4 Jun 2026, 02:36 BST_
+
+_Memory Rebuild Engine (Phase 2)_
+
+### Added
+
+- Rebuild Memory & Indexes pipeline (chunked transcript-first rebuild with progress)
+- Story Settings drawer action to rebuild memory and update story state safely
+
+## Story Engine v1.3.0
+
+_Released: 4 Jun 2026, 02:36 BST_
+
+_Memory Architecture v2 Schema (Phase 1)_
+
+### Added
+
+- Story state now supports optional v2 schema fields (indexes, scene snapshot, threads, indexing metadata)
+- Story state saves include memory architecture metadata for future transcript-first indexing
+- Safe story-state parsing helper for backward-compatible normalization
+
+## Story Engine v1.2.2
+
+_Released: 4 Jun 2026, 02:36 BST_
+
+_Summary & Story State Hotfix_
+
+### Fixed
+
+- PDF/Markdown/TXT/JSON exports now show the latest available summary even when story.currentSummary is empty
+- Story exports trigger a story-state refresh when possible to reduce stale scene/state data
+
+## Story Engine v1.2.1
+
+_Released: 2 Jun 2026, 03:32 BST_
+
+_Changelog Hotfix_
+
+### Fixed
+
+- Fix changelog history scrolling
+
+## Story Engine v1.2.0
+
+_Released: 2 Jun 2026, 03:23 BST_
+
+_UI Polish Pass_
+
+### Added
+
+- Neutral workspace surfaces and dividers (consistent across themes)
+- Stronger theme identity in card borders, badges, focus and hover states
+- Improved card separation (subtle themed border tint and glow)
+
+## Story Engine v1.1.0
+
+_Released: 2 Jun 2026, 03:23 BST_
+
+_Theme System Foundations_
+
+### Added
+
+- Theme architecture (ThemeProvider + CSS variables)
+- Theme selection in Settings
+- Gold theme (premium) alongside Purple default
+
+## Story Engine v1.0.1
+
+_Released: 2 Jun 2026, 03:23 BST_
+
+_Bug Fixes & Quality_
+
+### Fixed
+
+- Story import universe matching (reuse existing universe when possible)
+- Story import character matching (reuse existing player character when possible)
+- Story import story matching (avoid duplicate story records when already present)
+- Character alias recognition guidance (nicknames and shortened names)
+- Canon naming persistence guidance (prefer familiar names after reveal)
+
+### Added
+
+- Android back navigation handling
+- Player character species field
+- Text size setting
+- Version display + changelog modal
+
+## Story Engine v1.0.0
+
+_Released: 2 Jun 2026, 03:23 BST_
+
+_Initial Release_
+
+### Added
+
+- Universes, Player Characters, and Stories
+- Story workspace with reader mode and transcript formatting
+- Universe wiki imports for lore context
+- Developer Notes (bugs, feature requests, testing notes) with JSON export
+- Story export (JSON, Markdown, TXT, PDF)
+- Workspace backup and restore
