@@ -7,11 +7,21 @@ export type LibraryStory = {
   updatedAt: string
 }
 
-export type LibraryCharacter = {
+export type Character = {
   id: string
   name: string
-  description: string
-  universes: string[]
+  aliases: string[]
+  age?: string
+  species?: string
+  gender?: string
+  pronouns?: string
+  concept?: string
+  appearance?: string
+  background?: string
+  personality?: string
+  notes?: string
+  createdAt: string
+  updatedAt: string
 }
 
 export type UniverseSource = {
@@ -56,24 +66,37 @@ export const mockStories: LibraryStory[] = [
   },
 ]
 
-export const mockCharacters: LibraryCharacter[] = [
+export const mockCharacters: Character[] = [
   {
     id: 'mara-venn',
     name: 'Mara Venn',
-    description: 'A patient courier with a talent for finding impossible routes.',
-    universes: ['The Meridian Reach'],
+    aliases: ['The Wayfinder'],
+    age: '29',
+    species: 'Human',
+    concept: 'A patient courier with a talent for finding impossible routes.',
+    personality: 'Observant, patient, and quietly stubborn.',
+    createdAt: '2026-09-01T10:00:00.000Z',
+    updatedAt: '2026-09-01T10:00:00.000Z',
   },
   {
     id: 'jon-bell',
     name: 'Jon Bell',
-    description: 'A salvage diver who trusts instruments more than legends.',
-    universes: ['The Meridian Reach', 'The Briarwild'],
+    aliases: [],
+    age: '34',
+    species: 'Human',
+    concept: 'A salvage diver who trusts instruments more than legends.',
+    personality: 'Practical, dryly funny, and hard to frighten.',
+    createdAt: '2026-08-22T10:00:00.000Z',
+    updatedAt: '2026-08-22T10:00:00.000Z',
   },
   {
     id: 'ellian-vale',
     name: 'Ellian Vale',
-    description: 'A village archivist collecting stories before they disappear.',
-    universes: ['The Briarwild'],
+    aliases: [],
+    concept: 'A village archivist collecting stories before they disappear.',
+    personality: 'Thoughtful, curious, and more adventurous than expected.',
+    createdAt: '2026-08-18T10:00:00.000Z',
+    updatedAt: '2026-08-18T10:00:00.000Z',
   },
 ]
 
