@@ -14,11 +14,20 @@ export type LibraryCharacter = {
   universes: string[]
 }
 
-export type LibraryUniverse = {
+export type UniverseSource = {
+  id: string
+  url: string
+}
+
+export type Universe = {
   id: string
   name: string
-  description: string
-  referenceSources?: number
+  type: 'referenced' | 'custom'
+  description?: string
+  concept?: string
+  sources?: UniverseSource[]
+  createdAt: string
+  updatedAt: string
 }
 
 export const mockStories: LibraryStory[] = [
@@ -68,16 +77,23 @@ export const mockCharacters: LibraryCharacter[] = [
   },
 ]
 
-export const mockUniverses: LibraryUniverse[] = [
+export const mockUniverses: Universe[] = [
   {
     id: 'meridian-reach',
     name: 'The Meridian Reach',
+    type: 'custom',
     description: 'A constellation of floating cities linked by old, luminous roads.',
-    referenceSources: 2,
+    concept: 'A constellation of floating cities linked by old, luminous roads.',
+    createdAt: '2026-09-01T10:00:00.000Z',
+    updatedAt: '2026-09-01T10:00:00.000Z',
   },
   {
     id: 'briarwild',
     name: 'The Briarwild',
+    type: 'referenced',
     description: 'An ancient woodland where every path remembers who walked it.',
+    sources: [{ id: 'briarwild-source', url: 'https://example.com/the-briarwild' }],
+    createdAt: '2026-08-22T10:00:00.000Z',
+    updatedAt: '2026-08-22T10:00:00.000Z',
   },
 ]
